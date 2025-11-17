@@ -1,0 +1,79 @@
+package edu.kh.servlet.controller;
+
+import java.io.IOException;
+
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+// Servlet 관련 코드를 작성하기 위해서는 HttpServlet 클래스 상속 받아야함
+// 상속받았다고 해서 바로 Servlet 등록이 되는 것은 아님!
+// -> 방법1. web.xml 작성하기
+// 	  방법2. @WebServlet() 어노테이션 사용하기
+
+/* 어노테이션 : 컴파일러가 읽는 주석
+ * -> 해당 클래스를 Servlet으로 등록하고 () 안에 작성된 주소와 
+ *    매핑하라고(연결하라고) 지시하는 어노테이션
+ * 
+ * → 서버 실행 시 자동으로 web.xml
+ * 	 <servlet> <servlet-mapping> 를 작성하는 효과
+ * */
+
+@WebServlet("/signUp") // index.html form 태그에 action 값 작성
+public class ExampleController2 extends HttpServlet {
+	
+//	Post 요청 처리 메서드 오버라이딩
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) 
+			throws ServletException, IOException {
+		
+//		요청 시 제출받은 데이터 얻어오기
+		String userId = req.getParameter("inputId");
+		String userPw = req.getParameter("inputPw");
+		String userName = req.getParameter("inputName");
+		String intro = req.getParameter("intro");
+		
+		System.out.println(userId);
+		System.out.println(userPw);
+		System.out.println(userName);
+		System.out.println(intro);
+		
+//		응답화면 만들기
+//		-> Java(Servlet)에서 응답화면을 작성하기 번거롭고 힘들다.
+//		-> JSP가 대신 화면을 만들어달라!
+//		-> Servlet이 JSP에게 요청/응답을 위임
+//		JSP가 대신 응답화면을 만들어주기 위해서는
+//		Servlet이 어떤 요청을 받았는지 알아야한다.(req, resp)
+		RequestDispatcher dispatcher // 키오스크 역할
+		= req.getRequestDispatcher("/WEB-INF/views/result.jsp");
+									// 키오스크가 사용자에게 주문 받은 음식을 주방장에게 전달해 줄 경로를 작성
+									// (webapp 폴더 기준 작성)
+		
+//		-> webapp 폴더는 웹 애플리케이션의 루트(root) 디렉토리로,
+//		브라우저를 통해 접근 가능한 정적 / 동적 리소스들이 위치하는 폴더
+//		-> webapp 폴더가 컨텍스트 루트(/)로 설정되기 때문에,
+//		해당 경로가 webapp 내부 경로로 해석되는 것.
+		
+//		WEB-INF 폴더에 있는 파일들은 클라이언트가 
+//		url로 직접 접근할 수 없는 영역,
+//		서블릿을 통해서만 접근 가능
+		
+		dispatcher.forward(req, resp); // Servlet -> JSP 요청 전달 코드
+//		RequestDispatcher 객체를 사용하여 현재 요청(req)와 응답(resp)을
+//		지정한 JSP 페이지로(result.jsp)로 전달하는 작업
+//		-> 즉, 현재 서블릿(ExampleController2)에서 처리하던 요청을
+//		result.jsp로 전달하고 제어권을 그곳으로 넘김(== 위임하다)
+		
+//		index.html은 사용자가 메인 페이지 주소로 
+//		직접 접근할 수 있어야 하기 때문에, 
+//		webapp 폴더 밖에 있는 것
+		
+		
+		
+		
+	}
+	
+}
